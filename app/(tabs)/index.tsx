@@ -1,75 +1,62 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useRef } from "react";
+import { SafeAreaView } from "react-native";
+import { launchCamera } from "react-native-image-picker";
+import PushNotification from "react-native-push-notification";
+import { WebView, WebViewMessageEvent } from "react-native-webview";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function App() {
+  const webviewRef = useRef<WebView>(null);
 
-export default function HomeScreen() {
+  const onMessage = async (event: WebViewMessageEvent) => {
+    const { action, payload } = JSON.parse(event.nativeEvent.data);
+
+    switch (action) {
+      case "openCamera":
+        // launch native camera
+        const result = await launchCamera({
+          mediaType: "photo",
+          includeBase64: true,
+        });
+        if (result.assets?.[0]?.base64) {
+          // send back base64 image data
+          webviewRef.current?.postMessage(
+            JSON.stringify({
+              action: "cameraResult",
+              data: result.assets[0].base64,
+            })
+          );
+        }
+        break;
+
+      case "scheduleNotification":
+        // schedule a local notification
+        PushNotification.localNotificationSchedule({
+          message: payload.message,
+          date: new Date(Date.now() + (payload.delayMs || 0)),
+        });
+        break;
+
+      // …add more handlers here…
+    }
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <WebView
+        ref={webviewRef}
+        source={{
+          uri: "https://habit-tracker-git-daniel-thromletts-projects.vercel.app?_vercel_share=8dRYuOPiA78YKfa0CGAMwdcXN6E7OTXW",
+        }}
+        onMessage={onMessage}
+        injectedJavaScriptBeforeContentLoaded={`
+          // expose a bridge object on window
+          window.NativeBridge = {
+            send: (msg) => window.ReactNativeWebView.postMessage(JSON.stringify(msg))
+          };
+        `}
+      />
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+//https://habit-tracker-git-main-thromletts-projects.vercel.app
