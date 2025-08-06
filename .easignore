@@ -37,3 +37,5 @@ yarn-error.log*
 # Asset originals that aren’t shipped
 assets/videos/
 assets/raw-images/
+
+gradle/wrapper*

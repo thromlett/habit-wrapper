@@ -2,6 +2,11 @@
   "cli": { "version": ">= 0.34.0" },
   "build": {
     "production": {
+      "ios": {
+        "env": {
+          "EXPO_APPLE_UPLOAD_DYSMS": "1"
+        }
+      },
       "distribution": "store"
     }
   },
