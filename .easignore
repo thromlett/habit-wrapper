@@ -1,0 +1,39 @@
+# Editor/IDE configs
+.vscode/
+.idea/
+
+# Git metadata
+.git/
+.gitignore
+
+# Local caches & temp folders
+.cache/
+.expo/
+.expo-shared/
+node_modules/               # *only* if you use EAS's Metro caching; otherwise keep this
+
+# Android build outputs (if you’ve ever run locally)
+android/.gradle/
+android/app/build/
+
+# iOS build outputs (never needed on EAS servers)
+ios/build/
+ios/Pods/
+ios/Podfile.lock
+
+# Web/web-build folders
+web-build/
+
+# Coverage & reports
+coverage/
+reports/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Asset originals that aren’t shipped
+assets/videos/
+assets/raw-images/
