@@ -44,6 +44,7 @@ export default function App() {
     <SafeAreaView style={{ flex: 1 }}>
       <WebView
         ref={webviewRef}
+        incognito={true}
         source={{
           uri: "https://habit-tracker-git-daniel-thromletts-projects.vercel.app?_vercel_share=8dRYuOPiA78YKfa0CGAMwdcXN6E7OTXW",
         }}
