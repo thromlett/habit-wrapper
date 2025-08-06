@@ -1,0 +1,21 @@
+{
+  "cli": { "version": ">= 0.34.0" },
+  "build": {
+    "production": {
+      "distribution": "store"
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascApiKeyPath": "credentials/AuthKey_455BHY9Q6X.p8",
+        "ascApiKeyIssuerId": "690a8071-c731-44ee-bf83-396bd4c2d71a",
+        "ascApiKeyId": "455BHY9Q6X",
+        "appleId": "danielthornley@icloud.com",
+        "ascAppId": "6749646270",
+        "appleTeamId": "465UZPL3FY",
+        "bundleIdentifier": "com.cirruscommercellc.habittracker"
+      }
+    }
+  }
+}
