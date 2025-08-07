@@ -3,14 +3,13 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "ios": { "buildType": "simulator" }
+      "distribution": "internal"
     },
     "production": {
       "ios": {
         "buildArtifactPaths": ["ios/build/*"],
         "env": {
-          "EXPO_APPLE_UPLOAD_DYSMS": true
+          "EXPO_APPLE_UPLOAD_DYSMS": "1"
         }
       },
       "distribution": "store"
