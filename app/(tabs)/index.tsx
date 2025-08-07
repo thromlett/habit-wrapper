@@ -1,10 +1,36 @@
 import Constants from "expo-constants";
+import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import * as Notifications from "expo-notifications";
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Platform, SafeAreaView } from "react-native";
 import { WebView, WebViewMessageEvent } from "react-native-webview";
+
+function runHaptic(style?: string) {
+  switch (style) {
+    case "selection":
+      return Haptics.selectionAsync();
+    case "impactLight":
+      return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    case "impactMedium":
+      return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    case "impactHeavy":
+      return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    case "success":
+      return Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Success
+      );
+    case "warning":
+      return Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Warning
+      );
+    case "error":
+      return Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    default:
+      return Haptics.selectionAsync();
+  }
+}
 
 export default function App() {
   const webviewRef = useRef<WebView>(null);
@@ -84,24 +110,36 @@ export default function App() {
         break;
       }
 
-      // …add more handlers here…
+      case "haptic": {
+        runHaptic(payload?.style);
+        break;
+      }
     }
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <WebView
-        ref={webviewRef}
-        incognito
-        source={{
-          uri: "https://habit-tracker-git-main-thromletts-projects.vercel.app?_vercel_share=OfJ18Cqi3vgrsKgFRgmltz0wy3vxwDMr",
-        }}
         onMessage={onMessage}
         injectedJavaScriptBeforeContentLoaded={`
           window.NativeBridge = {
             send: (msg) => window.ReactNativeWebView.postMessage(JSON.stringify(msg))
           };
+          true;
         `}
+        ref={webviewRef}
+        setSupportMultipleWindows={false}
+        overScrollMode="never"
+        cacheEnabled
+        bounces={false}
+        allowsBackForwardNavigationGestures
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        //originWhitelist={["https://domain.com"]} //Enable when we have a static domain
+        decelerationRate={0.9}
+        source={{
+          uri: "https://habit-tracker-git-main-thromletts-projects.vercel.app?_vercel_share=OfJ18Cqi3vgrsKgFRgmltz0wy3vxwDMr",
+        }}
       />
     </SafeAreaView>
   );
