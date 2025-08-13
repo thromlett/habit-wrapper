@@ -1,15 +1,25 @@
 {
   "expo": {
-    "name": "habit-wrapper",
+    "name": "Cirrus Habit Tracker",
     "slug": "habit-wrapper",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/Cirrus_Tracker_Icon.png",
     "scheme": "habitwrapper",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "jsEngine": "jsc",
+    "splash": {
+      "image": "./assets/Cirrus_Tracker_Full.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
+      "splash": {
+        "image": "./assets/Cirrus_Tracker_Full.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
       "supportsTablet": true,
       "bundleIdentifier": "com.cirruscommercellc.habittracker",
       "buildNumber": "7",
@@ -36,7 +46,7 @@
     "plugins": [
       "expo-router",
       "expo-image-picker",
-      ["expo-notifications", {}],
+      "expo-notifications",
       [
         "expo-splash-screen",
         {

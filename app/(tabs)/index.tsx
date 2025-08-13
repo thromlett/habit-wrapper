@@ -2,10 +2,14 @@ import Constants from "expo-constants";
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import * as Notifications from "expo-notifications";
+import * as SplashScreen from "expo-splash-screen";
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { Platform, SafeAreaView } from "react-native";
+import { Alert, Linking, Platform, SafeAreaView } from "react-native";
 import { WebView, WebViewMessageEvent } from "react-native-webview";
+
+// Keep the splash visible until we explicitly hide it.
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function runHaptic(style?: string) {
   switch (style) {
@@ -30,6 +34,40 @@ function runHaptic(style?: string) {
     default:
       return Haptics.selectionAsync();
   }
+}
+
+export async function ensureNotificationPermission(): Promise<boolean> {
+  const current = await Notifications.getPermissionsAsync();
+  if (
+    current.granted ||
+    current.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+  )
+    return true;
+
+  const req = await Notifications.requestPermissionsAsync();
+  return (
+    req.granted ||
+    req.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+  );
+}
+
+export async function ensureCameraPermission(): Promise<boolean> {
+  let status = (await ImagePicker.getCameraPermissionsAsync()).status;
+  if (status !== "granted")
+    status = (await ImagePicker.requestCameraPermissionsAsync()).status;
+
+  if (status !== "granted") {
+    Alert.alert(
+      "Camera permission needed",
+      "Enable camera access in Settings to take a photo.",
+      [
+        { text: "Open Settings", onPress: () => Linking.openSettings() },
+        { text: "Cancel", style: "cancel" },
+      ]
+    );
+    return false;
+  }
+  return true;
 }
 
 export default function App() {
@@ -73,6 +111,12 @@ export default function App() {
         });
       }
     })();
+
+    // Safety: if something goes wrong, don't leave users stuck on the splash.
+    const failSafe = setTimeout(() => {
+      SplashScreen.hideAsync().catch(() => {});
+    }, 12000);
+    return () => clearTimeout(failSafe);
   }, []);
 
   const onMessage = async (event: WebViewMessageEvent) => {
@@ -137,6 +181,14 @@ export default function App() {
         showsHorizontalScrollIndicator={false}
         //originWhitelist={["https://domain.com"]} //Enable when we have a static domain
         decelerationRate={0.9}
+        // Hide the splash once the initial page is ready.
+        onLoadEnd={() => {
+          SplashScreen.hideAsync().catch(() => {});
+        }}
+        onError={() => {
+          // Also hide on error so users aren't stuck.
+          SplashScreen.hideAsync().catch(() => {});
+        }}
         source={{
           uri: "https://habit-tracker-git-main-thromletts-projects.vercel.app?_vercel_share=OfJ18Cqi3vgrsKgFRgmltz0wy3vxwDMr",
         }}
