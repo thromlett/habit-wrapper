@@ -20,14 +20,15 @@
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.cirruscommercellc.habittracker",
-      "buildNumber": "8",
+      "buildNumber": "9",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can attach images to your habits.",
         "NSCameraUsageDescription": "We need camera access so you can take new habit photos.",
-        "NSPhotoLibraryAddUsageDescription": "We save photos you take to your library."
+        "NSPhotoLibraryAddUsageDescription": "We save photos you take to your library.",
+        "UIDeviceFamily": [1]
       }
     },
     "android": {
